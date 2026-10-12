@@ -1,0 +1,364 @@
+/* ===== 色の設定（ここを変えるとアプリ全体の色が変わります） =====
+   明るい表示の色を :root に、ダークモードの色を下の2つのブロックに書く。
+   部品の色はすべてここの名前（--bg など）を使い、色を直接書かない。 */
+:root {
+  --bg: #fdf8f3;          /* 画面の背景 */
+  --card: #ffffff;        /* 白い箱 */
+  --surface: #ffffff;     /* ボタン・カード・入力欄の地 */
+  --text: #3a3330;
+  --muted: #7d726b;
+  --border: #eadfd5;
+  --accent: #e0703a;
+  --accent-dark: #c85a26; /* 白地の上のアクセント文字 */
+  --on-accent: #ffffff;   /* アクセント色の上の文字 */
+  --tint: #fff1e8;        /* 選択中・押したときの淡いオレンジ */
+  --tint-soft: #fffaf6;   /* 確認欄・理由欄の地 */
+  --badge-bg: #f3ebe4;
+  --ok-bg: #e3f1dc;   --ok-fg: #2f6a20;
+  --warn-bg: #fff0c2; --warn-fg: #7a5200;
+  --err-bg: #fbe1dd;  --error: #c0392b;
+  --shadow: rgba(58, 51, 48, 0.12);
+  --washoku: linear-gradient(135deg, #f6e3c5, #e9c99a);
+  --chuka: linear-gradient(135deg, #fbd3c9, #f0a08c);
+  --yoshoku: linear-gradient(135deg, #d9ead3, #a9d1a0);
+}
+
+/* 端末がダークモードのとき（明るい表示を明示的に選んだ場合を除く） */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1d1916; --card: #27221e; --surface: #2f2925;
+    --text: #efe7e0; --muted: #b3a79e; --border: #463d37;
+    --accent: #e8814e; --accent-dark: #f29a6c; --on-accent: #1d1916;
+    --tint: #3d2b20; --tint-soft: #2a231e; --badge-bg: #3a322c;
+    --ok-bg: #22361d; --ok-fg: #9fd48f;
+    --warn-bg: #3b3019; --warn-fg: #f0c873;
+    --err-bg: #43231f; --error: #f08a7d;
+    --shadow: rgba(0, 0, 0, 0.45);
+    --washoku: linear-gradient(135deg, #5a4733, #42341f);
+    --chuka: linear-gradient(135deg, #5c3530, #44251f);
+    --yoshoku: linear-gradient(135deg, #34452f, #26361f);
+    color-scheme: dark;
+  }
+}
+/* ダークモードを明示的に選んだとき（上と同じ色） */
+:root[data-theme="dark"] {
+  --bg: #1d1916; --card: #27221e; --surface: #2f2925;
+  --text: #efe7e0; --muted: #b3a79e; --border: #463d37;
+  --accent: #e8814e; --accent-dark: #f29a6c; --on-accent: #1d1916;
+  --tint: #3d2b20; --tint-soft: #2a231e; --badge-bg: #3a322c;
+  --ok-bg: #22361d; --ok-fg: #9fd48f;
+  --warn-bg: #3b3019; --warn-fg: #f0c873;
+  --err-bg: #43231f; --error: #f08a7d;
+  --shadow: rgba(0, 0, 0, 0.45);
+  --washoku: linear-gradient(135deg, #5a4733, #42341f);
+  --chuka: linear-gradient(135deg, #5c3530, #44251f);
+  --yoshoku: linear-gradient(135deg, #34452f, #26361f);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Meiryo", sans-serif;
+  line-height: 1.7;
+}
+
+main {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 16px 40px;
+}
+
+/* ===== ヘッダー・フッター ===== */
+.site-header {
+  text-align: center;
+  padding: 28px 16px 12px;
+}
+.site-header h1 { margin: 0; font-size: 1.9rem; }
+.today { margin: 4px 0 0; color: var(--muted); }
+
+.site-footer {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--muted);
+  padding: 16px;
+}
+.site-footer a { color: inherit; }
+
+/* ===== カード（各セクションの白い箱） ===== */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  margin: 16px 0;
+}
+.card h2 { margin: 0 0 16px; font-size: 1.2rem; }
+
+/* ===== 入力欄 ===== */
+.field { margin-bottom: 16px; }
+.field > label, .label { display: block; font-weight: bold; margin-bottom: 6px; }
+
+input[type="number"], input[type="text"] {
+  font: inherit;
+  padding: 8px 12px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  width: 100%;
+  max-width: 360px;
+}
+.input-unit { display: flex; align-items: center; gap: 8px; }
+.input-unit input { max-width: 140px; }
+
+.choices { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.chip:has(input:checked) { border-color: var(--accent); background: var(--tint); }
+
+/* ===== ボタン ===== */
+.btn {
+  font: inherit;
+  padding: 8px 18px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--accent-dark);
+  cursor: pointer;
+}
+.btn:hover { background: var(--tint); }
+.btn:disabled { opacity: 0.5; cursor: wait; }
+.btn:focus-visible, .chip:focus-within, .menu-card:focus-visible, .thumb-remove:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.menu-card { color: var(--text); }
+@media (prefers-reduced-motion: reduce) {
+  .menu-card { transition: none; }
+  .menu-card:hover { transform: none; }
+}
+.btn-primary { background: var(--accent); color: var(--on-accent); }
+.btn-primary:hover { background: var(--accent-dark); }
+.btn-large { display: block; width: 100%; padding: 14px; font-size: 1.1rem; font-weight: bold; }
+.btn-small { padding: 4px 12px; font-size: 0.9rem; }
+
+.status { color: var(--muted); margin: 8px 0 0; }
+.status.error { color: var(--error); }
+.status a { color: var(--accent-dark); font-weight: bold; }
+.status:empty { display: none; }
+
+/* ===== チラシ画像の読み取り ===== */
+.hint { color: var(--muted); margin: -8px 0 16px; font-size: 0.92rem; }
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.upload-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+.upload-btn {
+  flex: 1 1 140px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  font-weight: bold;
+}
+.upload-btn.disabled { opacity: 0.45; pointer-events: none; }
+/* キーボード操作でもどのボタンにいるか分かるように */
+.upload-buttons input:focus-visible + .upload-btn { outline: 2px solid var(--accent); outline-offset: 2px; }
+.image-count { margin: 10px 0 0; font-weight: bold; }
+
+.thumbs { list-style: none; padding: 0; margin: 8px 0 12px; display: grid; gap: 8px; }
+.thumbs li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.thumbs img { width: 64px; height: 64px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+.thumb-name { flex: 1; font-size: 0.9rem; overflow-wrap: anywhere; }
+.thumb-remove {
+  font: inherit;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--muted);
+  cursor: pointer;
+}
+.thumb-remove:hover { color: var(--error); border-color: var(--error); }
+
+.btn-wide { display: block; width: 100%; min-height: 48px; margin-top: 4px; }
+.ocr-progress { margin-top: 12px; }
+.ocr-progress progress { width: 100%; height: 14px; accent-color: var(--accent); }
+
+.ocr-result {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border: 2px solid var(--accent);
+  border-radius: 12px;
+  background: var(--tint-soft);
+}
+.ocr-result h3 { margin: 0 0 10px; font-size: 1.05rem; }
+.accuracy { border-radius: 8px; padding: 8px 12px; margin-bottom: 8px; }
+.accuracy p { margin: 2px 0; }
+.accuracy-main { font-weight: bold; font-size: 1.05rem; }
+.accuracy.level-good { background: var(--ok-bg); color: var(--ok-fg); }
+.accuracy.level-fair { background: var(--warn-bg); color: var(--warn-fg); }
+.accuracy.level-low  { background: var(--err-bg); color: var(--error); }
+.per-image { margin: 0 0 10px; padding-left: 1.2em; font-size: 0.88rem; color: var(--muted); }
+.ocr-checks { background: var(--surface); border: 1px dashed var(--border); border-radius: 8px; padding: 8px 12px; margin-bottom: 10px; }
+.ocr-checks-title { margin: 0 0 4px; font-weight: bold; }
+.ocr-checks ul { margin: 0; padding-left: 1.2em; font-size: 0.9rem; }
+.found-title { font-weight: bold; margin: 10px 0 6px; }
+.found-list { list-style: none; padding: 0; margin: 0 0 12px; }
+.found-list li { padding: 8px 4px; border-bottom: 1px solid var(--border); }
+.found-list label { display: flex; align-items: center; gap: 8px; font-weight: bold; min-height: 32px; cursor: pointer; }
+.found-list input { width: 22px; height: 22px; }
+.evidence { display: block; color: var(--muted); font-size: 0.82rem; overflow-wrap: anywhere; margin-left: 30px; }
+.notice-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+.notice-buttons .btn { flex: 1 1 200px; min-height: 48px; }
+.ocr-applied { margin: 0; font-weight: bold; color: var(--ok-fg); }
+
+.pending-notice {
+  margin: 12px 0;
+  padding: 12px 16px;
+  border: 2px solid var(--accent);
+  border-radius: 12px;
+  background: var(--tint);
+}
+.pending-notice p { margin: 0 0 8px; font-weight: bold; }
+
+.sale-details { margin-top: 16px; border-top: 1px solid var(--border); padding-top: 12px; }
+.sale-details summary { cursor: pointer; font-weight: bold; min-height: 32px; padding: 4px 0; }
+.sale-details[open] summary { margin-bottom: 10px; }
+
+/* ===== 特売の食材（手で選ぶ） ===== */
+.sale-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.sale-count { font-weight: bold; }
+.sale-group { margin-bottom: 10px; }
+.sale-group-title { margin: 0 0 4px; font-size: 0.85rem; color: var(--muted); }
+.sale-list .chip { padding: 4px 12px; font-size: 0.92rem; }
+.sale-list small { color: var(--muted); }
+
+/* ===== 提案結果 ===== */
+.summary { color: var(--muted); margin-top: -8px; }
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.menu-card {
+  font: inherit;
+  text-align: left;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.menu-card:hover { transform: translateY(-3px); box-shadow: 0 6px 16px var(--shadow); }
+.menu-card-body { padding: 10px 12px; }
+.menu-card-name { font-weight: bold; margin: 0 0 4px; }
+.menu-card-meta { font-size: 0.85rem; color: var(--muted); margin: 0; }
+
+/* 料理のイラスト（画像の代わり） */
+.dish-img {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 4 / 3;
+  font-size: 3.5rem;
+}
+.dish-img.large { font-size: 6rem; border-radius: 12px; aspect-ratio: 16 / 7; margin: 12px 0; }
+.dish-img.washoku { background: var(--washoku); }
+.dish-img.chuka { background: var(--chuka); }
+.dish-img.yoshoku { background: var(--yoshoku); }
+
+/* おすすめの理由 */
+.reasons {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 6px 0 0;
+  border-top: 1px dashed var(--border);
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+.reason-box {
+  background: var(--tint-soft);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 16px;
+  margin: 12px 0 4px;
+}
+.reason-box h3 { margin: 0 0 4px; font-size: 1rem; }
+.reasons-long { list-style: none; margin: 0; padding: 0; }
+.reasons-long li { margin: 4px 0; }
+
+.badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  padding: 0 8px;
+  border-radius: 999px;
+  margin-right: 4px;
+  background: var(--badge-bg);
+}
+.badge.season { background: var(--ok-bg); color: var(--ok-fg); }
+.badge.over { background: var(--err-bg); color: var(--error); }
+.badge.sale { background: var(--warn-bg); color: var(--warn-fg); }
+
+/* ===== レシピ詳細 ===== */
+.recipe-title { margin: 8px 0 4px; font-size: 1.5rem; }
+.recipe-cols { display: grid; grid-template-columns: 1fr 1.6fr; gap: 24px; }
+.ingredients { list-style: none; padding: 0; margin: 0; }
+.ingredients li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 0;
+  border-bottom: 1px dotted var(--border);
+}
+.steps { padding-left: 1.4em; margin: 0; }
+.steps li { margin-bottom: 10px; }
+
+@media (max-width: 640px) {
+  .recipe-cols { grid-template-columns: 1fr; }
+  main { padding: 0 16px 32px; }
+  .card { padding: 16px; }
+  .site-header { padding: 20px 12px 8px; }
+  .site-header h1 { font-size: 1.6rem; }
+  /* 指で押しやすい大きさにする */
+  .btn { min-height: 44px; }
+  .chip { min-height: 40px; }
+  .chip input { width: 18px; height: 18px; }
+  .menu-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* スマホで入力欄を押したときに画面が勝手に拡大されないよう、文字は16px以上にする */
+input[type="number"], input[type="text"] { font-size: 16px; }

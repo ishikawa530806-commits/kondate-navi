@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#e0703a">
+  <title>献立ナビ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <h1>🍽️ 献立ナビ</h1>
+    <p id="today" class="today"></p>
+  </header>
+
+  <main>
+    <!-- ① 条件の指定 -->
+    <section class="card">
+      <h2>① 条件を指定する</h2>
+
+      <div class="field">
+        <label for="people">人数</label>
+        <div class="input-unit">
+          <input type="number" id="people" min="1" max="10" value="2" inputmode="numeric">
+          <span>人</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="budget">食材の合計金額（予算）</label>
+        <div class="input-unit">
+          <input type="number" id="budget" min="100" step="100" value="1000" inputmode="numeric">
+          <span>円</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="label">ジャンル</span>
+        <div class="choices">
+          <label class="chip"><input type="radio" name="genre" value="washoku"> 和食</label>
+          <label class="chip"><input type="radio" name="genre" value="chuka"> 中華</label>
+          <label class="chip"><input type="radio" name="genre" value="yoshoku"> 洋食</label>
+          <label class="chip"><input type="radio" name="genre" value="omakase" checked> おまかせ</label>
+        </div>
+      </div>
+    </section>
+
+    <!-- ② 特売の食材 -->
+    <section class="card">
+      <h2>② チラシから特売の食材を読み取る（任意）</h2>
+      <p class="hint">チラシの画像を選ぶか撮影して「読み取る」を押してください。見つかった特売の食材を使う献立を優先して提案します。</p>
+
+      <div class="upload-buttons">
+        <input type="file" id="imageInput" accept="image/*" multiple class="visually-hidden">
+        <label class="btn upload-btn" for="imageInput">🖼️ 画像を選ぶ</label>
+        <input type="file" id="cameraInput" accept="image/*" capture="environment" class="visually-hidden">
+        <label class="btn upload-btn" for="cameraInput">📷 カメラで撮る</label>
+      </div>
+      <p id="imageCount" class="image-count">チラシの画像：0 / 5枚</p>
+      <p id="imageStatus" class="status" aria-live="polite"></p>
+      <ul id="imageList" class="thumbs"></ul>
+
+      <button type="button" id="ocrBtn" class="btn btn-primary btn-wide" disabled>画像から特売の食材を読み取る</button>
+      <div id="ocrProgress" class="ocr-progress" hidden>
+        <progress id="ocrBar" max="100" value="0"></progress>
+        <p id="ocrProgressText" class="status" aria-live="polite"></p>
+      </div>
+      <p id="ocrError" class="status error" aria-live="polite"></p>
+
+      <!-- 読み取り結果の確認（読み取り後に表示） -->
+      <div id="ocrResult" class="ocr-result" hidden></div>
+
+      <details id="saleDetails" class="sale-details">
+        <summary>特売の食材を手で選ぶ・直す</summary>
+        <div class="sale-head">
+          <span id="saleCount" class="sale-count">特売の食材：未選択</span>
+          <button type="button" id="clearSale" class="btn btn-small">選択をすべて解除</button>
+        </div>
+        <div id="saleList" class="sale-list"></div>
+      </details>
+    </section>
+
+    <button type="button" id="suggestBtn" class="btn btn-primary btn-large">献立を提案する</button>
+    <p id="formError" class="status error" aria-live="polite"></p>
+    <!-- 読み取り結果が未確認のまま提案しようとしたときの確認 -->
+    <div id="pendingNotice" class="pending-notice" hidden>
+      <p>チラシの読み取り結果をまだ反映していません。どうしますか？</p>
+      <div class="notice-buttons">
+        <button type="button" id="applyAndSuggest" class="btn btn-primary">読み取り結果を反映して提案</button>
+        <button type="button" id="suggestWithout" class="btn">反映せずに提案</button>
+      </div>
+    </div>
+
+    <!-- ③ 提案結果 -->
+    <section id="results" class="card" hidden>
+      <h2>③ おすすめの献立</h2>
+      <p id="resultSummary" class="summary"></p>
+      <div id="menuGrid" class="menu-grid"></div>
+      <button type="button" id="reshuffleBtn" class="btn">ほかの献立を見る</button>
+    </section>
+
+    <!-- ④ レシピ -->
+    <section id="recipe" class="card" hidden>
+      <button type="button" id="backBtn" class="btn btn-small">← 提案一覧に戻る</button>
+      <div id="recipeBody"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    金額は目安です。実際の価格や特売価格は店頭・チラシでご確認ください。<br>
+    チラシの画像は端末の中だけで読み取り、外部には送りません。
+  </footer>
+
+  <script src="recipes.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
