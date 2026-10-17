@@ -478,8 +478,9 @@ function escapeHtml(text) {
     .replace(/'/g, "&#39;");
 }
 
-// 旬の料理ほど点数を高くする
-function seasonScore(recipe, season) {
+// 旬の料理ほど点数を高くする（旬を考慮しないときは、どの料理も同じ点数）
+function seasonScore(recipe, season, useSeason = true) {
+  if (!useSeason) return 0;
   if (recipe.seasons.includes(season)) return 2;
   if (recipe.seasons.includes("all")) return 1.5;
   return 0;
@@ -491,7 +492,7 @@ function saleScore(usedCount) {
 }
 
 // 条件に合う献立を5つ選ぶ
-function pickRecipes({ people, budget, genre, season, saleIds }) {
+function pickRecipes({ people, budget, genre, season, useSeason, saleIds }) {
   const candidates = RECIPES
     .filter((r) => genre === "omakase" || r.genre === genre)
     .map((r) => {
@@ -500,7 +501,7 @@ function pickRecipes({ people, budget, genre, season, saleIds }) {
         recipe: r,
         saleUsed,
         // 毎回少し違う提案になるよう、点数にランダムな値を足す
-        score: seasonScore(r, season) + saleScore(saleUsed.length) + Math.random(),
+        score: seasonScore(r, season, useSeason) + saleScore(saleUsed.length) + Math.random(),
         overBudget: r.cost * people > budget,
       };
     });
@@ -517,7 +518,7 @@ const SEASON_ICONS = { spring: "🌸", summer: "🌻", autumn: "🍂", winter: "
 const QUICK_MINUTES = 20; // これ以下なら「手軽」
 const SLOW_MINUTES = 45;  // これ以上なら「時間のある日向き」
 
-function buildReasons(pick, { people, budget, season }) {
+function buildReasons(pick, { people, budget, season, useSeason = true }) {
   const r = pick.recipe;
   const reasons = [];
   const seasonName = SEASON_NAMES[season];
@@ -528,9 +529,12 @@ function buildReasons(pick, { people, budget, season }) {
       long: `チラシで特売の${names}を使う料理です。` });
   }
 
+  // 旬を考慮しないときは、今が旬の料理にだけ季節の理由を添える
   if (r.seasons.includes(season)) {
     reasons.push({ icon: SEASON_ICONS[season], short: `${seasonName}が旬`,
       long: `今が旬の${seasonName}にぴったりの料理です。` });
+  } else if (!useSeason) {
+    // 季節の理由は付けない
   } else if (r.seasons.includes("all")) {
     reasons.push({ icon: "🍽️", short: "季節を問わない定番",
       long: "季節を問わずおいしく食べられる定番の料理です。" });
@@ -564,6 +568,7 @@ function readConditions() {
   const people = Number($("people").value);
   const budget = Number($("budget").value);
   const genre = document.querySelector('input[name="genre"]:checked').value;
+  const useSeason = document.querySelector('input[name="seasonMode"]:checked').value === "on";
 
   if (!Number.isInteger(people) || people < 1 || people > 10) {
     throw new Error("人数は 1〜10 の整数で入力してください。");
@@ -571,7 +576,7 @@ function readConditions() {
   if (!(budget >= 100)) {
     throw new Error("食材の合計金額は 100円以上で入力してください。");
   }
-  return { people, budget, genre, season: getSeason(new Date()), saleIds: getCheckedSaleIds() };
+  return { people, budget, genre, season: getSeason(new Date()), useSeason, saleIds: getCheckedSaleIds() };
 }
 
 function suggest() {
@@ -587,13 +592,14 @@ function suggest() {
 }
 
 function showSuggestions() {
-  const { people, budget, genre, season, saleIds } = lastConditions;
+  const { people, budget, genre, season, useSeason, saleIds } = lastConditions;
   currentPicks = pickRecipes(lastConditions);
 
   const genreText = genre === "omakase" ? "おまかせ" : GENRE_NAMES[genre];
   const saleText = saleIds.length ? `・特売の食材${saleIds.length}件` : "";
+  const seasonText = useSeason ? SEASON_NAMES[season] : `${SEASON_NAMES[season]}（旬は考慮しない）`;
   $("resultSummary").textContent =
-    `${SEASON_NAMES[season]}・${people}人分・予算${budget.toLocaleString()}円・${genreText}${saleText} の条件で選びました。料理を選ぶと作り方が見られます。`;
+    `${seasonText}・${people}人分・予算${budget.toLocaleString()}円・${genreText}${saleText} の条件で選びました。料理を選ぶと作り方が見られます。`;
 
   const grid = $("menuGrid");
   grid.innerHTML = "";
