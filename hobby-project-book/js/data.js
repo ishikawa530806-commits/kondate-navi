@@ -127,8 +127,8 @@ export async function photoUrl(id) {
 
 // ---------- お題ストック ----------
 
-export function newIdea({ title, genre, weekends, memo }) {
-  return { id: uid(), title, genre, weekends, memo, projectId: null, createdAt: now() };
+export function newIdea({ title, genre, weekends, memo, plan = null }) {
+  return { id: uid(), title, genre, weekends, memo, plan, projectId: null, createdAt: now() };
 }
 
 export async function listIdeas() {
@@ -141,13 +141,21 @@ export const saveIdea = (idea) => db.put('ideas', idea);
 export const deleteIdea = (id) => db.delete('ideas', id);
 
 // お題からプロジェクトを始める
+// （提案から作ったお題は idea.plan に材料・作業の下書きを持っている）
 export async function startProjectFromIdea(idea, weekends = idea.weekends || 1) {
   const p = newProject({ title: idea.title, genre: idea.genre, weekends, ideaId: idea.id });
+  if (idea.plan) Object.assign(p.plan, idea.plan);
   if (idea.memo) p.plan.memo = idea.memo;
   await saveProject(p);
   idea.projectId = p.id;
   await saveIdea(idea);
   return p;
+}
+
+// すでにプロジェクトかお題ストックにあるタイトル（提案で同じものを出さないため）
+export async function knownTitles() {
+  const [projects, ideas] = await Promise.all([db.getAll('projects'), db.getAll('ideas')]);
+  return new Set([...projects, ...ideas].map((x) => x.title));
 }
 
 // ---------- 共通 ----------

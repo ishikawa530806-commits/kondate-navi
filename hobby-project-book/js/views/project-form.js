@@ -1,6 +1,6 @@
 // プロジェクトの作成・編集
 import {
-  GENRES, newProject, getProject, saveProject, deleteProject, getIdea, startProjectFromIdea, listLogs,
+  GENRES, genreOf, newProject, getProject, saveProject, deleteProject, getIdea, startProjectFromIdea, listLogs,
 } from '../data.js';
 import { esc, toast, confirmDialog } from '../ui.js';
 
@@ -26,10 +26,12 @@ export default {
     const minWeekends = editing
       ? Math.max(1, ...(await listLogs(editing.id)).map((l) => l.weekend))
       : 1;
-    const v = editing || { title: idea?.title || '', genre: idea?.genre || 'diy', weekends: idea?.weekends || 1 };
+    const v = editing || { title: idea?.title || '', genre: idea?.genre || params.genre || 'diy', weekends: idea?.weekends || 1 };
+    // 新規作成では、ジャンルは前の画面で選んだものに決まっている
+    const genreFixed = !editing && !idea;
 
     ctx.setTitle(editing ? 'プロジェクトを編集' : '新しいプロジェクト');
-    ctx.setBack(editing ? `#/p/${editing.id}` : '#/');
+    ctx.setBack(editing ? `#/p/${editing.id}` : idea ? '#/ideas' : `#/new/${v.genre}`);
 
     root.innerHTML = `
       <form class="form card" id="project-form">
@@ -40,7 +42,10 @@ export default {
         </label>
         <div class="field">
           <span class="field-label">ジャンル</span>
-          ${genreSelect('genre', v.genre)}
+          ${genreFixed
+            ? `<div><span class="chip">${genreOf(v.genre).icon} ${esc(genreOf(v.genre).label)}</span>
+               <input type="hidden" name="genre" value="${esc(v.genre)}"></div>`
+            : genreSelect('genre', v.genre)}
         </div>
         <div class="field">
           <span class="field-label">予定する週末の回数</span>

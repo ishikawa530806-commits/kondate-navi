@@ -3,7 +3,7 @@
 //
 // 方針は「ネットワーク優先、だめならキャッシュ」。
 // オンラインなら常に最新版が読み込まれるので、更新のたびに CACHE_VERSION を上げなくても反映される。
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v2';
 const CACHE_NAME = `hobby-project-book-${CACHE_VERSION}`;
 
 const APP_SHELL = [
@@ -17,8 +17,12 @@ const APP_SHELL = [
   './js/ui.js',
   './js/photos.js',
   './js/backup.js',
+  './js/suggest.js',
+  './js/suggestions-data.js',
   './js/views/home.js',
+  './js/views/new-project.js',
   './js/views/project-form.js',
+  './js/views/suggest-view.js',
   './js/views/project.js',
   './js/views/complete.js',
   './js/views/gallery.js',

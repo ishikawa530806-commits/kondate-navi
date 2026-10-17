@@ -9,7 +9,9 @@
 import { requestPersistence } from './db.js';
 import { loadPhotos } from './ui.js';
 import home from './views/home.js';
+import newProject from './views/new-project.js';
 import projectForm from './views/project-form.js';
+import suggestView from './views/suggest-view.js';
 import project from './views/project.js';
 import gallery from './views/gallery.js';
 import galleryDetail from './views/gallery-detail.js';
@@ -18,7 +20,10 @@ import settings from './views/settings.js';
 
 const ROUTES = [
   { path: '/', view: home, tab: 'home' },
-  { path: '/new', view: projectForm, tab: 'home' },
+  { path: '/new', view: newProject, tab: 'home' },
+  { path: '/new/:genre', view: newProject, tab: 'home' },
+  { path: '/new/:genre/create', view: projectForm, tab: 'home' },
+  { path: '/new/:genre/suggest', view: suggestView, tab: 'home' },
   { path: '/p/:id/edit', view: projectForm, tab: 'home' },
   { path: '/p/:id', view: project, tab: 'home' },
   { path: '/gallery', view: gallery, tab: 'gallery' },
