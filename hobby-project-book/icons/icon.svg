@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#3f7d5a"/>
+  <!-- ノート -->
+  <rect x="136" y="104" width="248" height="304" rx="24" fill="#f7f4ee"/>
+  <rect x="136" y="104" width="44" height="304" rx="20" fill="#e08a3c"/>
+  <rect x="160" y="104" width="20" height="304" fill="#e08a3c"/>
+  <!-- チェックリスト -->
+  <g stroke="#3f7d5a" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M214 178l18 18 32-36"/>
+    <path d="M214 258l18 18 32-36"/>
+  </g>
+  <g stroke="#c9c2b4" stroke-width="16" stroke-linecap="round">
+    <path d="M290 182h56"/>
+    <path d="M290 262h56"/>
+    <path d="M220 338h126"/>
+  </g>
+</svg>

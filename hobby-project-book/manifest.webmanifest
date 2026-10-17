@@ -1,0 +1,17 @@
+{
+  "name": "プロジェクト帳",
+  "short_name": "プロジェクト帳",
+  "description": "週末1〜4回で終わる小さな趣味プロジェクトを、計画→作業→完成まで記録するアプリ",
+  "lang": "ja",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f7f4ee",
+  "theme_color": "#3f7d5a",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

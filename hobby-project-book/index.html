@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#3f7d5a">
+  <meta name="description" content="週末1〜4回で終わる小さな趣味プロジェクトを、計画→作業→完成まで記録するアプリ">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="プロジェクト帳">
+  <title>プロジェクト帳</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <button id="back-btn" class="icon-btn" aria-label="戻る" hidden>‹</button>
+    <h1 id="page-title">プロジェクト帳</h1>
+  </header>
+
+  <main id="view" aria-live="polite"></main>
+
+  <nav class="tabbar" aria-label="メインメニュー">
+    <a href="#/" data-tab="home"><span class="tab-icon">📒</span><span>プロジェクト</span></a>
+    <a href="#/gallery" data-tab="gallery"><span class="tab-icon">🖼️</span><span>ギャラリー</span></a>
+    <a href="#/ideas" data-tab="ideas"><span class="tab-icon">💡</span><span>お題ストック</span></a>
+    <a href="#/settings" data-tab="settings"><span class="tab-icon">⚙️</span><span>設定</span></a>
+  </nav>
+
+  <div id="modal-root"></div>
+  <div id="toast" role="status" hidden></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
